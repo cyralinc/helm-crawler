@@ -1,0 +1,118 @@
+
+{{- $job := .Values.cronjob }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: "{{ include "common.names.fullname" . }}"
+  namespace: {{ include "common.names.namespace" . | quote }}
+  {{- $labels := include "common.tplvalues.merge" ( dict "values" ( list .Values.cronjob.labels .Values.commonLabels ) "context" . ) }}
+  labels: {{- include "common.labels.standard" ( dict "customLabels" $labels "context" $ ) | nindent 4 }}
+  {{- if or .Values.commonAnnotations .Values.cronjob.annotations }}
+  {{- $annotations :=  include "common.tplvalues.merge" ( dict "values" ( list .Values.cronjob.annotations .Values.commonAnnotations ) "context" . ) }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" $annotations "context" $ ) | nindent 4 }}
+  {{- end }}
+spec:
+  concurrencyPolicy: {{ $job.concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ $job.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels: {{ include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 12 }}
+          {{- if or .Values.cronjob.podAnnotations .Values.commonAnnotations }}
+          {{- $annotations := include "common.tplvalues.merge" ( dict "values" ( list .Values.cronjob.podAnnotations .Values.commonAnnotations ) "context" . ) }}
+          annotations: {{- include "common.tplvalues.render" ( dict "value" $annotations "context" $ ) | nindent 12 }}
+          {{- end }}
+        spec:
+        {{- if hasKey $job "imagePullSecrets" }}
+          imagePullSecrets:
+          - name: {{ $.Release.Name }}-docker
+        {{- end }}
+          serviceAccountName: {{ include "cyral.serviceAccountName" . }}
+        {{- if hasKey $job "securityContext" }}
+          {{- if $job.securityContext.runAsUser }}
+          securityContext:
+            runAsUser: {{ $job.securityContext.runAsUser }}
+            {{- if $job.securityContext.runAsGroup }}
+            runAsGroup: {{ $job.securityContext.runAsGroup }}
+            {{- end }}
+            {{- if $job.securityContext.fsGroup }}
+            fsGroup: {{ $job.securityContext.fsGroup }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+          containers:
+          - name: "cyral-repo-crawler"
+            image: "{{ $.Values.imageRegistry }}/cyral-repo-crawler:{{ $.Values.tag }}"
+            imagePullPolicy: {{ $.Values.imagePullPolicy }}
+            {{- /* only read from config file if its potentially value injection */}}
+            {{- if or (not (include "cyral.cpCredentials.secretName" . )) (not (include "cyral.repoCredentials.secretName" . )) }}
+            args: ["--config-file", "/etc/cyral/config.yaml"]
+            {{- end }}
+            env:
+              - name: REPO_CRAWLER_CYRAL_WORKER_ID
+                value: "{{ include "common.names.fullname" . }}"
+              - name: REPO_CRAWLER_CYRAL_API_HOST
+                value: {{ .Values.controlPlane | required "cyral.controlPlane is required." }}
+              - name: REPO_CRAWLER_REPO_NAME
+                value: {{ $job.repoName | required "cronjob.repoName is required"}}
+              {{- /* Assume vault annotations if secrets arent used */}}
+              {{- if (include "cyral.cpCredentials.secretName" . ) }}
+              - name: REPO_CRAWLER_CYRAL_CLIENT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ include "cyral.cpCredentials.secretName" $ }}
+                    key: clientId
+              - name: REPO_CRAWLER_CYRAL_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ include "cyral.cpCredentials.secretName" $ }}
+                    key: clientSecret
+              {{- end }}
+              {{- if (include "cyral.repoCredentials.secretName" . ) }}
+              - name: REPO_CRAWLER_REPO_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ include "cyral.repoCredentials.secretName" $ }}
+                    key: username
+              - name: REPO_CRAWLER_REPO_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ include "cyral.repoCredentials.secretName" $ }}
+                    key: password
+              {{- end }}
+            {{- with $job.env }}
+{{ toYaml . | indent 12 }}
+            {{- end }}
+            {{- with $job.envFrom }}
+            envFrom:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+            resources:
+            {{- with $job.resources }}
+{{ toYaml . | indent 14 }}
+            {{- end }}
+            {{- with $job.volumeMounts }}
+            volumeMounts:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+          {{- with $job.nodeSelector }}
+          nodeSelector:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with $job.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with $job.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          restartPolicy: {{ $job.restartPolicy }}
+          {{- with $job.volumes }}
+          volumes:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+  schedule: {{ $job.schedule | quote }}
+  successfulJobsHistoryLimit: {{ $job.successfulJobsHistoryLimit }}

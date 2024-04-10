@@ -1,0 +1,138 @@
+## @section Require parameters
+## @descriptionStart
+## Parameters related to connection to the Cyral control plane
+## @descriptionEnd
+## @param controlPlane host name of the control plane. typically tenant.app.cyral.com
+##
+controlPlane: ""
+## @ credentials used for accessing the control plane
+## 
+credentials:
+  ## @param credentials.existingSecret Utilize a pre-existing secret for control plane credentials
+  ##
+  existingSecret: ""
+  ## @param credentials.clientId The Cyral Client ID to be used for connecting to the control plane
+  ##
+  clientId: ""
+  ## @param credentials.clientSecret The Cyral Client Secret to be used for connecting to the control plane
+  ##
+  clientSecret: ""
+  ## @param credentials.annotations Annotations for the secret
+  ##
+  annotations: {}
+  ## @param credentials.labels Labels for the secret
+  ##
+  labels: {}
+
+## @section cronjob Cronjob configuration parameters
+##
+cronjob:
+  ## @param cronjob.repoName Data repo name to be scanned
+  ##
+  repoName: ""
+  ## @param cronjob.repoHost [nullable] host address to use to connect to the database. If not provided it will be pulled from the control plane
+  ##
+  repoHost: ""
+  ## @param cronjob.annotations
+  ##
+  annotations: {}
+  ## @param cronjob.podAnnotations Used to apply annotations to the job pod itself. Useful for Vault
+  ##
+  podAnnotations: {}
+  ## @param cronjob.labels
+  ##
+  labels: {}
+  ## @param cronjob.schedule
+  ##
+  schedule: "0 0 * * 6"
+  ## @param cronjob.restartPolicy
+  ##
+  restartPolicy: "Never"
+  ## @extra cronjob.resources Job Resource definition
+  ##
+  resources:
+    ## @skip cronjob.resources.requests 
+    ##
+    requests:
+      ## param cronjob.resources.requests.cpu requests
+      ##
+      cpu: 5m
+      ## param cronjob.resources.requests.memory requests
+      ##
+      memory: 20Mi
+    ## @skip cronjob.resources.limits
+    ##
+    limits:
+      ## param cronjob.resources.limits.cpu limit
+      ##
+      cpu: 50m
+      ## param cronjob.resources.limits.memory limit
+      ##
+      memory: 100Mi
+  ## @section cronjob.serviceAccount
+  ##
+  serviceAccount:
+    ## @param cronjob.serviceAccount.create
+    ##
+    create: true
+    ## @param cronjob.serviceAccount.annotations
+    ##
+    annotations: {}
+    ## @param cronjob.serviceAccount.labels
+    ##
+    labels: {}
+    ## @param cronjob.serviceAccount.name
+    ##
+    name: ""
+  ## @section cronjob.repoCredentials
+  ##
+  repoCredentials:
+    ## @param cronjob.repoCredentials.annotations
+    ##
+    annotations: {}
+    ## @param cronjob.repoCredentials.labels
+    ##
+    labels: {}
+    ## @param cronjob.repoCredentials.existingSecret
+    ##
+    existingSecret: ""
+    ## @param cronjob.repoCredentials.username
+    ##
+    username: ""
+    ## @param cronjob.repoCredentials.password
+    ##
+    password: ""
+
+## @section Optional Configuration
+##
+## @param imageRegistry Image registry to pull the crawler image from
+##
+imageRegistry: public.ecr.aws/cyral
+## @param tag Version/Tag of image to pull
+##
+tag: v0.11.1
+## @param imagePullPolicy Pull policy configuration
+##
+imagePullPolicy: IfNotPresent
+## @param imagePullSecrets Image pull secret configuration
+##
+imagePullSecrets: ""
+
+## @param kubeVersion Force target Kubernetes version (using Helm capabilities if not set)
+##
+kubeVersion: ""
+## @param nameOverride String to partially override common.names.fullname template with a string (will prepend the release name)
+##
+nameOverride: ""
+## @param fullnameOverride String to fully override common.names.fullname template with a string
+##
+fullnameOverride: ""
+## @param commonAnnotations Common annotations to add to all resources.
+##
+commonAnnotations: {}
+## @param commonLabels Common labels to add to all resources.
+##
+commonLabels: {}
+## @param clusterDomain Kubernetes cluster domain
+##
+clusterDomain: cluster.local
