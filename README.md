@@ -49,8 +49,9 @@ kubectl create secret generic datarepocreds --from-literal=username=$USERNAME --
 
 ### Vault Annotations
 
-Credentials can be provide vai Vault annotations as well. The follow example provides both the database credentials
-and the control plane credentials
+If you arent using the Vault Secrets Operator and would like to use the annotation based approach, you can set it up in the following way.
+
+This example provides both the database credentials and the control plane credentials
 
 ```yaml
 controlPlane: "stable.dev.cyral.com"
@@ -76,10 +77,12 @@ cronjob:
 
 ## Install and Run On-Demand
 
+clone/download this repository and generate a values file.
 
-
-If you arent using the Vault Secrets Operator and would like to use the annotation based approach, you can set it up in the following way.
-
+```shell
+helm install $name .
+kubectl create job --from=cronjob/$name $jobname
+```
 
 ## Parameters
 
