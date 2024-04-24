@@ -38,6 +38,6 @@ jobs:
           REGISTRY_ALIAS: cyral/helm/crawler
           REPOSITORY: crawler
         run: |
-          sed -i "s/version: */version: $GITHUB_REF_NAME/" Chart.yaml
+          sed -i "s/version: .*/version: $GITHUB_REF_NAME/" Chart.yaml
           helm package $REPOSITORY
           helm push $REPOSITORY-${GITHUB_REF_NAME}.tgz oci://$REGISTRY/$REGISTRY_ALIAS
