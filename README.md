@@ -2,6 +2,12 @@
 
 Deploy the Cyral Repo Crawler as a Kubernetes CronJob via Helm
 
+Build a value file and run the following command
+
+```shell
+helm upgrade -i <release_name> oci://public.ecr.aws/cyral/helm/crawler --version <version_tag> -f <your_value_file.yaml>
+```
+
 ## Deployment Values Examples
 
 ### Credentials provided directly in value file
