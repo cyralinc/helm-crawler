@@ -40,5 +40,5 @@ jobs:
         run: |
           echo "setting version to $GITHUB_SHA"
           sed -i "s/version: .*/version: $GITHUB_SHA/" Chart.yaml
-          helm package $REPOSITORY
+          helm package .
           helm push $REPOSITORY-${GITHUB_SHA}.tgz oci://$REGISTRY/$REGISTRY_ALIAS
