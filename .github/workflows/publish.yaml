@@ -38,7 +38,8 @@ jobs:
           REGISTRY_ALIAS: cyral/helm/crawler
           REPOSITORY: crawler
         run: |
-          echo "setting version to $GITHUB_SHA"
-          sed -i "s/version: .*/version: 0.0.0+$GITHUB_SHA/" Chart.yaml
+          VERSION="0.0.0+${GITHUB_SHA}"
+          echo "setting version to $VERSION"
+          sed -i "s/version: .*/version: $VERSION/" Chart.yaml
           helm package .
-          helm push $REPOSITORY-${GITHUB_SHA}.tgz oci://$REGISTRY/$REGISTRY_ALIAS
+          helm push $REPOSITORY-${VERSION}.tgz oci://$REGISTRY/$REGISTRY_ALIAS
