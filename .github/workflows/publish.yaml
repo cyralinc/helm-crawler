@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - "**"
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   publish-tag:
     runs-on: ubuntu-latest
