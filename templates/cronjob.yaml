@@ -22,7 +22,7 @@ spec:
           labels: {{ include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 12 }}
           {{- if or .Values.cronjob.podAnnotations .Values.commonAnnotations }}
           {{- $annotations := include "common.tplvalues.merge" ( dict "values" ( list .Values.cronjob.podAnnotations .Values.commonAnnotations ) "context" . ) }}
-          annotations: {{- include "common.tplvalues.render" ( dict "value" $annotations "context" $ ) | nindent 12 }}
+          annotations: {{- $annotations | nindent 12 }}
           {{- end }}
         spec:
         {{- if hasKey $job "imagePullSecrets" }}
