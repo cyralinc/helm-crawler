@@ -6,27 +6,29 @@ on:
       - "**"
 jobs:
   publish-tag:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: arn:aws:iam::155826672581:role/GitHubLinkedRole
-        aws-region: us-east-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::155826672581:role/GitHubLinkedRole
+          aws-region: us-east-1
 
-    - name: Login to Amazon ECR Public
-      id: login-ecr-public
-      uses: aws-actions/amazon-ecr-login@v2
-      with:
-        registry-type: public
+      - name: Login to Amazon ECR Public
+        id: login-ecr-public
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: public
 
-    - name: Package and push helm chart to Amazon ECR Public
-      env:
-        REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-        REGISTRY_ALIAS: cyral/helm/crawler
-        REPOSITORY: crawler
-      run: |
-        sed -i "s/version: */version: $GITHUB_REF_NAME/" Chart.yaml
-        helm package $REPOSITORY
-        helm push $REPOSITORY-${GITHUB_REF_NAME}.tgz oci://$REGISTRY/$REGISTRY_ALIAS
+      - name: Package and push helm chart to Amazon ECR Public
+        env:
+          REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+          REGISTRY_ALIAS: cyral/helm/crawler
+          REPOSITORY: crawler
+        run: |
+          sed -i "s/version: */version: $GITHUB_REF_NAME/" Chart.yaml
+          helm package $REPOSITORY
+          helm push $REPOSITORY-${GITHUB_REF_NAME}.tgz oci://$REGISTRY/$REGISTRY_ALIAS
