@@ -2,6 +2,12 @@
 
 Deploy the Cyral Repo Crawler as a Kubernetes CronJob via Helm
 
+Build a value file and run the following command
+
+```shell
+helm upgrade -i <release_name> oci://public.ecr.aws/cyral/helm/crawler --version <version_tag> -f <your_value_file.yaml>
+```
+
 ## Deployment Values Examples
 
 ### Credentials provided directly in value file
@@ -56,24 +62,23 @@ This example provides both the database credentials and the control plane creden
 ```yaml
 controlPlane: "stable.dev.cyral.com"
 cronjob:
-  repoName: jrich-pg1
+  repoName: datareponame
   podAnnotations:
       vault.hashicorp.com/agent-inject: "true"
-      vault.hashicorp.com/agent-pre-populate-only : "true"
-      vault.hashicorp.com/role: jrich
       vault.hashicorp.com/tls-skip-verify: "true"
+      vault.hashicorp.com/agent-pre-populate-only : "true"
+      vault.hashicorp.com/role: myrole
       vault.hashicorp.com/secret-volume-path-config.yaml: "/etc/cyral"
       vault.hashicorp.com/agent-inject-template-config.yaml: |
-        {{- with secret "jrich/db/jrich-pg1" }}
+        {{- with secret "vault/path/datareponame" }}
         "repo-user": "{{ .Data.data.username }}"
         "repo-password": "{{ .Data.data.password }}"
         {{- end }}
-        {{- with secret "jrich/cp/creds" }}
+        {{- with secret "vault/cyralcp/creds" }}
         "cyral-client-id": "{{ .Data.data.clientId }}"
         "cyral-client-secret": "{{ .Data.data.clientSecret }}"
         {{- end }}
 ```
-
 
 ## Install and Run On-Demand
 
@@ -142,6 +147,6 @@ Parameters related to connection to the Cyral control plane
 | `kubeVersion`       | Force target Kubernetes version (using Helm capabilities if not set)                                      | `""`                   |
 | `nameOverride`      | String to partially override common.names.fullname template with a string (will prepend the release name) | `""`                   |
 | `fullnameOverride`  | String to fully override common.names.fullname template with a string                                     | `""`                   |
-| `commonAnnotations` | Common annotations to add to all Cyral Sidecar resources.                                                 | `{}`                   |
-| `commonLabels`      | Common labels to add to all Cyral Sidecar resources.                                                      | `{}`                   |
+| `commonAnnotations` | Common annotations to add to all resources.                                                               | `{}`                   |
+| `commonLabels`      | Common labels to add to all resources.                                                                    | `{}`                   |
 | `clusterDomain`     | Kubernetes cluster domain                                                                                 | `cluster.local`        |
