@@ -39,6 +39,6 @@ jobs:
           REPOSITORY: crawler
         run: |
           echo "setting version to $GITHUB_SHA"
-          sed -i "s/version: .*/version: $GITHUB_SHA/" Chart.yaml
+          sed -i "s/version: .*/version: 0.0.0+$GITHUB_SHA/" Chart.yaml
           helm package .
           helm push $REPOSITORY-${GITHUB_SHA}.tgz oci://$REGISTRY/$REGISTRY_ALIAS
