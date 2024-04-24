@@ -5,12 +5,12 @@ on:
     tags:
       - "**"
 
-permissions:
-  id-token: write
-  contents: read
 
 jobs:
   publish-tag:
+    permissions:
+      id-token: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
