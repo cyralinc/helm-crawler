@@ -62,22 +62,23 @@ This example provides both the database credentials and the control plane creden
 ```yaml
 controlPlane: "stable.dev.cyral.com"
 cronjob:
-  repoName: datareponame
+  repoName: myrepo
   podAnnotations:
       vault.hashicorp.com/agent-inject: "true"
-      vault.hashicorp.com/tls-skip-verify: "true"
       vault.hashicorp.com/agent-pre-populate-only : "true"
       vault.hashicorp.com/role: myrole
+      vault.hashicorp.com/tls-skip-verify: "true"
       vault.hashicorp.com/secret-volume-path-config.yaml: "/etc/cyral"
+      # Because we're using a merge function, the go template for vault needs to be escaped
       vault.hashicorp.com/agent-inject-template-config.yaml: |
-        {{- with secret "vault/path/datareponame" }}
-        "repo-user": "{{ .Data.data.username }}"
-        "repo-password": "{{ .Data.data.password }}"
-        {{- end }}
-        {{- with secret "vault/cyralcp/creds" }}
-        "cyral-client-id": "{{ .Data.data.clientId }}"
-        "cyral-client-secret": "{{ .Data.data.clientSecret }}"
-        {{- end }}
+        {{ "{{" }}- with secret "vault/db/myrepo" }}
+        "repo-user": "{{ "{{" }} .Data.data.username }}"
+        "repo-password": "{{ "{{" }} .Data.data.password }}"
+        {{ "{{" }}- end }}
+        {{ "{{" }}- with secret "vault/cp/creds" }}
+        "cyral-client-id": "{{ "{{" }} .Data.data.clientId }}"
+        "cyral-client-secret": "{{ "{{" }} .Data.data.clientSecret }}"
+        {{ "{{" }}- end }}
 ```
 
 ## Install and Run On-Demand
