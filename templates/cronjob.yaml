@@ -83,7 +83,7 @@ spec:
                     key: password
               {{- end }}
             {{- with $job.env }}
-{{ toYaml . | indent 12 }}
+{{ toYaml . | indent 14 }}
             {{- end }}
             {{- with $job.envFrom }}
             envFrom:
