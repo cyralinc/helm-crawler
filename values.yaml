@@ -42,7 +42,10 @@ cronjob:
   ## @param cronjob.labels
   ##
   labels: {}
-  ## @param cronjob.schedule
+  ## @param cronjob.env Additonal environment variables (used for advanced configuration)
+  ## 
+  env: {}
+  ## @param cronjob.schedule Schedule for when to run the crawler
   ##
   schedule: "0 0 * * 6"
   ## @param cronjob.restartPolicy
@@ -110,7 +113,7 @@ cronjob:
 imageRegistry: public.ecr.aws/cyral
 ## @param tag Version/Tag of image to pull
 ##
-tag: v0.11.1
+tag: v0.12.4
 ## @param imagePullPolicy Pull policy configuration
 ##
 imagePullPolicy: IfNotPresent

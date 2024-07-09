@@ -90,6 +90,27 @@ helm install $name .
 kubectl create job --from=cronjob/$name $jobname
 ```
 
+## Advanced Options (Oracle/Snowflake)
+
+For scanning oracle or snowflake additional configuration needs to be added
+
+For Oracle the service name needs to be provided (typically it should be set to `ORCL`)
+
+```yaml
+cronjob:
+  env:
+    - name: REPO_CRAWLER_REPO_ADVANCED
+      value: "{\"oracle\":{\"service-name\":\"ORCL\"}}"
+```
+
+For Snowflake we need to specify some additional information: Account, Role and Warehouse
+
+```yaml
+cronjob:
+  env:
+      - name: REPO_CRAWLER_REPO_ADVANCED
+        value: "{\"snowflake\":{\"account\":\"$account\",\"role\":\"$role\",\"warehouse\":\"$warehouse\"}}"
+
 ## Parameters
 
 ### Require parameters
@@ -114,7 +135,8 @@ Parameters related to connection to the Cyral control plane
 | `cronjob.annotations`    |                                                                                                          | `{}`        |
 | `cronjob.podAnnotations` | Used to apply annotations to the job pod itself. Useful for Vault                                        | `{}`        |
 | `cronjob.labels`         |                                                                                                          | `{}`        |
-| `cronjob.schedule`       |                                                                                                          | `0 0 * * 6` |
+| `cronjob.env`            | Additonal environment variables (used for advanced configuration)                                        | `{}`        |
+| `cronjob.schedule`       | Schedule for when to run the crawler                                                                     | `0 0 * * 6` |
 | `cronjob.restartPolicy`  |                                                                                                          | `Never`     |
 | `cronjob.resources`      | Job Resource definition                                                                                  |             |
 
@@ -142,7 +164,7 @@ Parameters related to connection to the Cyral control plane
 | Name                | Description                                                                                               | Value                  |
 | ------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `imageRegistry`     | Image registry to pull the crawler image from                                                             | `public.ecr.aws/cyral` |
-| `tag`               | Version/Tag of image to pull                                                                              | `v0.11.1`              |
+| `tag`               | Version/Tag of image to pull                                                                              | `v0.12.4`              |
 | `imagePullPolicy`   | Pull policy configuration                                                                                 | `IfNotPresent`         |
 | `imagePullSecrets`  | Image pull secret configuration                                                                           | `""`                   |
 | `kubeVersion`       | Force target Kubernetes version (using Helm capabilities if not set)                                      | `""`                   |
