@@ -164,7 +164,7 @@ Parameters related to connection to the Cyral control plane
 | Name                | Description                                                                                               | Value                  |
 | ------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `imageRegistry`     | Image registry to pull the crawler image from                                                             | `public.ecr.aws/cyral` |
-| `tag`               | Version/Tag of image to pull                                                                              | `v0.12.4`              |
+| `tag`               | Version/Tag of image to pull                                                                              | `v0.12.5`              |
 | `imagePullPolicy`   | Pull policy configuration                                                                                 | `IfNotPresent`         |
 | `imagePullSecrets`  | Image pull secret configuration                                                                           | `""`                   |
 | `kubeVersion`       | Force target Kubernetes version (using Helm capabilities if not set)                                      | `""`                   |
