@@ -113,7 +113,7 @@ cronjob:
 imageRegistry: public.ecr.aws/cyral
 ## @param tag Version/Tag of image to pull
 ##
-tag: v0.12.4
+tag: v0.12.5
 ## @param imagePullPolicy Pull policy configuration
 ##
 imagePullPolicy: IfNotPresent
