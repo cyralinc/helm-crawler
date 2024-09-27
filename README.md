@@ -22,7 +22,6 @@ cronjob:
     repoCredentials:
         username: <data repo username>
         password: <data repo password>
-
 ```
 
 ### Externally managed secrets
@@ -38,7 +37,6 @@ cronjob:
     repoName: <data repo name>
     repoCredentials:
         existingSecret: <secret name>
-
 ```
 
 For the control plane credentials we expect a `clientId` and `clientSecret` key
@@ -110,10 +108,11 @@ cronjob:
   env:
       - name: REPO_CRAWLER_REPO_ADVANCED
         value: "{\"snowflake\":{\"account\":\"$account\",\"role\":\"$role\",\"warehouse\":\"$warehouse\"}}"
+```
 
 ## Parameters
 
-### Require parameters
+### Required parameters
 
 Parameters related to connection to the Cyral control plane
 
@@ -126,7 +125,7 @@ Parameters related to connection to the Cyral control plane
 | `credentials.annotations`    | Annotations for the secret                                             | `{}`  |
 | `credentials.labels`         | Labels for the secret                                                  | `{}`  |
 
-### cronjob Cronjob configuration parameters
+### Cronjob configuration parameters
 
 | Name                     | Description                                                                                              | Value       |
 | ------------------------ | -------------------------------------------------------------------------------------------------------- | ----------- |
@@ -140,7 +139,7 @@ Parameters related to connection to the Cyral control plane
 | `cronjob.restartPolicy`  |                                                                                                          | `Never`     |
 | `cronjob.resources`      | Job Resource definition                                                                                  |             |
 
-### cronjob.serviceAccount
+### Cronjob service account
 
 | Name                                 | Description | Value  |
 | ------------------------------------ | ----------- | ------ |
@@ -149,7 +148,7 @@ Parameters related to connection to the Cyral control plane
 | `cronjob.serviceAccount.labels`      |             | `{}`   |
 | `cronjob.serviceAccount.name`        |             | `""`   |
 
-### cronjob.repoCredentials
+### Cronjob repo credentials
 
 | Name                                     | Description | Value |
 | ---------------------------------------- | ----------- | ----- |
