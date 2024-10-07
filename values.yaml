@@ -6,7 +6,7 @@
 ##
 controlPlane: ""
 ## @ credentials used for accessing the control plane
-## 
+##
 credentials:
   ## @param credentials.existingSecret Utilize a pre-existing secret for control plane credentials
   ##
@@ -43,7 +43,7 @@ cronjob:
   ##
   labels: {}
   ## @param cronjob.env Additonal environment variables (used for advanced configuration)
-  ## 
+  ##
   env: {}
   ## @param cronjob.schedule Schedule for when to run the crawler
   ##
@@ -54,24 +54,24 @@ cronjob:
   ## @extra cronjob.resources Job Resource definition
   ##
   resources:
-    ## @skip cronjob.resources.requests 
+    ## @skip cronjob.resources.requests
     ##
     requests:
       ## param cronjob.resources.requests.cpu requests
       ##
-      cpu: 5m
+      cpu: 250m
       ## param cronjob.resources.requests.memory requests
       ##
-      memory: 20Mi
+      memory: 512Mi
     ## @skip cronjob.resources.limits
     ##
     limits:
       ## param cronjob.resources.limits.cpu limit
       ##
-      cpu: 50m
+      cpu: 500m
       ## param cronjob.resources.limits.memory limit
       ##
-      memory: 100Mi
+      memory: 512Mi
   ## @section cronjob.serviceAccount
   ##
   serviceAccount:
